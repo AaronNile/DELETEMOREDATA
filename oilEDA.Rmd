@@ -1,0 +1,97 @@
+---
+title: "oilEDA"
+authors: Aaron Nile, Kyle, Eliott
+fontsize: 12pt
+geometry: margin=1in
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+urlcolor: black
+header-includes:
+- \usepackage{setspace}
+- \onehalfspacing
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, highlight=FALSE, warning=FALSE, comment=NA)
+
+
+library(corrplot)
+library(GGally)
+
+```
+
+```{r}
+oilData <- read.csv("clean.csv")
+
+# Converting qualitative variables to factors
+oilData$region <- as.factor(oilData$region)
+oilData$LL <- as.factor(oilData$LL)
+oilData$qual_score <- as.factor(oilData$qual_score)
+
+head(oilData)
+str(oilData)
+```
+
+
+---
+
+## 2. Distribution of Response Variable
+
+```{r}
+hist(oilData$electricity_oil_pct,
+     xlab = "Percentage of Electricity from Oil",
+     main = "Histogram of Response Variable",
+     breaks = 40,       # increase number of bins
+     xaxt = "n")        # suppress x-axis
+
+# Add custom x-axis ticks every 5%
+axis(side = 1, at = seq(0, 100, by = 5))  # 0%, 5%, 10%, ..., 100%
+```
+
+```{r}
+quant_vars <- c("population", "gdp", "trade", "industry_pct")
+for (var in quant_vars) {
+  plot(oilData[[var]], oilData$electricity_oil_pct,
+       xlab = var, ylab = "Electricity from Oil (%)",
+       main = paste("Electricity Oil % vs", var))
+  abline(lm(oilData$electricity_oil_pct ~ oilData[[var]]), col="red")
+}
+
+# Correlations
+cor(oilData[, c("population","gdp","trade","industry_pct")],
+    oilData$electricity_oil_pct, use="pairwise.complete.obs")
+
+```
+## 4. Qualitative Predictors vs Response
+
+### Boxplots
+
+```{r}
+# By region
+ggplot(oilData, aes(x = region, y = electricity_oil_pct)) +
+  geom_boxplot(fill = "lightblue") +
+  theme_minimal() +
+  labs(title = "Electricity Oil % by Region")
+
+# By landlocked
+ggplot(oilData, aes(x = LL, y = electricity_oil_pct)) +
+  geom_boxplot(fill = "lightgreen") +
+  theme_minimal() +
+  labs(title = "Electricity Oil % by Landlocked Status")
+
+# By corruption level
+ggplot(oilData, aes(x = qual_score, y = electricity_oil_pct)) +
+  geom_boxplot(fill = "lightcoral") +
+  theme_minimal() +
+  labs(title = "Electricity Oil % by Corruption Level")
+```
+
+
+### Frequency tables for qualitative variables
+
+```{r}
+table(oilData$region)
+table(oilData$LL)
+table(oilData$qual_score)
+```
