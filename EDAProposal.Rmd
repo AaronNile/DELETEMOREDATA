@@ -1,0 +1,107 @@
+---
+title: "Insert heading" 
+author: "Group Name"
+fontsize: 12pt
+geometry: margin=1in
+urlcolor: black
+output: pdf_document
+header-includes:
+- \usepackage{setspace}
+- \onehalfspacing
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, highlight=FALSE, comment=NA, warnings=FALSE,message=FALSE)
+```
+
+```{r, echo=FALSE, warning=FALSE,results=FALSE}
+## Use this chunk for reading in packages.
+## Use this chunk for reading in the data, combining the data, and any other major data cleaning that is not relevant to show.
+## Remove the ## before all code.
+```
+
+
+
+
+
+\newpage
+
+## Introduction
+
+## Data Summary
+
+### Metadata Description
+
+### EDA Summary
+
+```{r, echo=FALSE, warning=FALSE,results=FALSE}
+## Use this code chunk can be used to execute any functions or summaries 
+## that will not be included in your output such as correlations or 5 number summaries
+
+```
+
+## Analysis and Results
+
+```{r, echo=FALSE, warning=FALSE,results=FALSE}
+## This code chunk can be used to execute any functions or summaries that will not be included in your output
+
+```
+
+
+## Conclusions
+
+\newpage
+
+## Appendix A: Data Dictionary
+
+| Variable Name | Abbreviated Name | Description |
+|:-------------:|:----------------:|:-----------:|
+|Variable 1|Var1|This is the first variable.|
+|Variable 2|Var2|This is the second variable.|
+
+\newpage
+
+## Appendix B: Data Rows
+
+```{r, echo=FALSE}
+# Use head() function to output first several rows
+
+```
+
+\newpage
+
+### Appendix C: Exploratory Data Analysis
+
+```{r, echo=FALSE}
+## Use this code  to include the relevant plots from EDA
+## This should NOT be a dump of all of your plots and outputs.
+## Refer to the Rmarkdown guide for sizing information on your plots
+
+# This partition is optional, but can be useful for a simple way to resize your plots
+par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
+```
+
+\newpage
+
+## Appendix D: Final Model Output and Plots
+
+```{r, echo=FALSE, warning=FALSE,results=FALSE}
+## This code chunk can be used to execute any functions or summaries that will not be included in your output
+```
+
+```{r, echo=FALSE}
+## Use this section to output the summary of your final model
+## Include the relevant plots from assumptions and your additional techniques
+## This should NOT be a dump of all of your plots and outputs.
+## Refer to the Rmarkdown guide for sizing information on your plots
+```
+
+\newpage
+
+## Appendix E: References
+
+### Background
+
+### Data Sources
+
+### Additional Help
