@@ -1,6 +1,6 @@
 ---
-title: "Insert heading" 
-author: "Group Name"
+title: "EDA Proposal" 
+author: "DELETEMOREDATA"
 fontsize: 12pt
 geometry: margin=1in
 urlcolor: black
@@ -20,13 +20,17 @@ knitr::opts_chunk$set(echo = TRUE, highlight=FALSE, comment=NA, warnings=FALSE,m
 ## Remove the ## before all code.
 ```
 
-
-
-
-
 \newpage
 
 ## Introduction
+
+There are three main research questions that we are trying to answer. Each of which is very similar, with the difference being between the predictors. The research questions are as follows:
+
+1.  Does a higher GDP lead to a higher percentage of electricity derived from oil?
+
+2.  Does a higher population lead to a higher percentage of electricity derived from oil?
+
+3.  Does a higher percentage of a country's economy in industry lead to a higher percentage of electricity derived from oil?
 
 ## Data Summary
 
@@ -47,17 +51,16 @@ knitr::opts_chunk$set(echo = TRUE, highlight=FALSE, comment=NA, warnings=FALSE,m
 
 ```
 
-
 ## Conclusions
 
 \newpage
 
 ## Appendix A: Data Dictionary
 
-| Variable Name | Abbreviated Name | Description |
-|:-------------:|:----------------:|:-----------:|
-|Variable 1|Var1|This is the first variable.|
-|Variable 2|Var2|This is the second variable.|
+| Variable Name | Abbreviated Name |         Description          |
+|:-------------:|:----------------:|:----------------------------:|
+|  Variable 1   |       Var1       | This is the first variable.  |
+|  Variable 2   |       Var2       | This is the second variable. |
 
 \newpage
 
