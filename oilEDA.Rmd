@@ -28,7 +28,6 @@ oilData <- read.csv("clean.csv")
 oilData$region <- as.factor(oilData$region)
 oilData$LL <- as.factor(oilData$LL)
 oilData$qual_score <- as.factor(oilData$qual_score)
-oilData <- oilData[-c(49, 15, 38, 23, 55), ]
 
 head(oilData)
 str(oilData)
@@ -51,12 +50,21 @@ axis(side = 1, at = seq(0, 100, by = 5))  # 0%, 5%, 10%, ..., 100%
 ```
 
 ```{r}
-quant_vars <- c("population", "gdp", "trade", "industry_pct")
+quant_vars <- names(oilData)[sapply(oilData, is.numeric)]
+quant_vars <- setdiff(quant_vars, "electricity_oil_pct")
+
 for (var in quant_vars) {
-  plot(oilData[[var]], oilData$electricity_oil_pct,
-       xlab = var, ylab = "Electricity from Oil (%)",
+  
+  df <- oilData[, c(var, "electricity_oil_pct")]
+  df <- df[complete.cases(df), ]
+  
+  plot(df[[var]], df$electricity_oil_pct,
+       xlab = var,
+       ylab = "Electricity from Oil (%)",
        main = paste("Electricity Oil % vs", var))
-  abline(lm(oilData$electricity_oil_pct ~ oilData[[var]]), col="red")
+  
+  model <- lm(electricity_oil_pct ~ x, data = transform(df, x = df[[var]]))
+  abline(model, col = "red")
 }
 
 # Correlations
