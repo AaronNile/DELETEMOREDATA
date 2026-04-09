@@ -72,7 +72,13 @@ There are three main research questions that we are trying to answer. Each of wh
 
 | Variable Name | Abbreviated Name |         Description          |
 |:-------------:|:----------------:|:----------------------------:|
-|  Variable 1   |       Var1       | This is the first variable.  |
+| Gross Domestic Product| GDP  | Market value of goods and services of a country in a specific period |
+| trade         | trade  | This is the second variable. |
+| Electricity Oil Percentage  | electricity_oil_pct | percentage of electricity from oil |
+| Industry Percentage   |  industry_pct  | percentage of GDP from industry |
+| Nuclear Reactors  | Reactors      | Number of nuclear reactors in particular country |
+| Landlocked    |   LL             | Binary variable: 1 if landlocked, 0 if not |
+| Region  | Region | This is the first variable.  |
 |  Variable 2   |       Var2       | This is the second variable. |
 
 \newpage
