@@ -1,6 +1,6 @@
 ---
 title: "oilEDA"
-authors: Aaron Nile, Kyle, Eliott
+authors: Aaron Nile, Kyle DeNoewer, Eliott Renenger
 fontsize: 12pt
 geometry: margin=1in
 output:
@@ -28,6 +28,7 @@ oilData <- read.csv("clean.csv")
 oilData$region <- as.factor(oilData$region)
 oilData$LL <- as.factor(oilData$LL)
 oilData$qual_score <- as.factor(oilData$qual_score)
+oilData <- oilData[-c(49, 15, 38, 23, 55), ]
 
 head(oilData)
 str(oilData)
