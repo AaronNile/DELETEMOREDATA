@@ -46,6 +46,9 @@ There are three main research questions that we are trying to answer. Each of wh
 
 ## Data Summary
 
+We complied global country-level economics data from the World Bank Global Development Indices Dataset. We combined this with information from the Word Nuclear Association, Transparency International, and Britannica. In total our dataset has 55 country-level observations measuring yearly averages for the year 2023. We have recorded Percentage of Electricity Derived from Oil Sources, GDP, Population, Percentage of GDP from Industrial Sources, Net trade, Number of Nuclear Reactors, Region, Landlocked Status, and Corruption level.
+
+In our dataset, we do not have any NA's. We dropped any country with NA values for concerns regarding data accuracy. We also dropped five extreme outliers well over a standard deviation away from the rest of our values. We are trying to evaluate the impact of various levels on developed and developing economies. All five of the outliers were below that threshold.
 
 ### Metadata Description
 
@@ -70,17 +73,17 @@ There are three main research questions that we are trying to answer. Each of wh
 
 ## Appendix A: Data Dictionary
 
-| Variable Name | Abbreviated Name |         Description          |
-|:-------------:|:----------------:|:----------------------------:|
-| Gross Domestic Product| GDP  | Market value of goods and services of a country in a specific period |
-| trade         | trade  | This is the second variable. |
-| Electricity Oil Percentage  | electricity_oil_pct | percentage of electricity from oil |
-| Industry Percentage   |  industry_pct  | percentage of GDP from industry |
-| Nuclear Reactors  | Reactors     | Number of nuclear reactors in particular country |
-| Landlocked    |   LL             | Binary variable: 1 if landlocked, 0 if not |
-| Region        | Region           |Geographic Regions, 1: Asia, 2: Europe, 3: Americas, 4: Africa, 5: Oceania |
-| Corruption level| qual_score     | Degree of corruption | 1:Very Corrupt 2: Moderately Corrupt, 3: Fair |
-| population     | population       | Population of a country |
+| Variable Name | Abbreviated Name | Description |
+|:----------------:|:-------------------:|:-------------------------------:|
+| Gross Domestic Product | GDP | Market value of goods and services of a country in a specific period |
+| trade | trade | This is the second variable. |
+| Electricity Oil Percentage | electricity_oil_pct | percentage of electricity from oil |
+| Industry Percentage | industry_pct | percentage of GDP from industry |
+| Nuclear Reactors | Reactors | Number of nuclear reactors in particular country |
+| Landlocked | LL | Binary variable: 1 if landlocked, 0 if not |
+| Region | Region | Geographic Regions, 1: Asia, 2: Europe, 3: Americas, 4: Africa, 5: Oceania |
+| Corruption level | qual_score | Degree of corruption |
+| population | population | Population of a country |
 
 \newpage
 
@@ -196,6 +199,23 @@ par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
 
 ### Background
 
+We complied global country-level economics data from the World Bank Global Development Indices Dataset. We combined this with information from the Word Nuclear Association, Transparency International, and Britannica. Our total dataset records Percentage of Electricity Derived from Oil Sources, GDP, Population, Percentage of GDP from Industrial Sources, Net trade, Number of Nuclear Reactors, Region, Landlocked Status, and Corruption level data.
+
 ### Data Sources
+The Editors of Encyclopaedia Britannica. (n.d.). Landlocked country. Encyclopaedia Britannica. https://www.britannica.com/topic/landlocked-country
+
+Transparency International. (2023). Corruption perceptions index 2023. https://www.transparency.org/en/cpi/2023
+
+United Nations Statistics Division. (n.d.). Statistical methodology and classifications. https://unstats.un.org/
+
+World Bank. (2024a). Electricity production from oil sources (% of total) [Data set]. World Development Indicators. https://data.worldbank.org/indicator/EG.ELC.PETR.ZS
+
+World Bank. (2024b). GDP (current US$) [Data set]. World Development Indicators. https://data.worldbank.org/indicator/NY.GDP.MKTP.CD
+
+World Bank. (2024c). Population, total [Data set]. World Development Indicators. https://data.worldbank.org/indicator/SP.POP.TOTL
+
+World Bank. (2024d). Trade (% of GDP) [Data set]. World Development Indicators. https://data.worldbank.org/indicator/BN.GSR.GNFS.CD
+
+World Nuclear Association. (n.d.). World nuclear power reactors and uranium requirements. https://world-nuclear.org/information-library/facts-and-figures/world-nuclear-power-reactors-and-uranium-requireme
 
 ### Additional Help
