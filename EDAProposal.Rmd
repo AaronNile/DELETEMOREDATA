@@ -46,9 +46,13 @@ There are three main research questions that we are trying to answer. Each of wh
 
 ## Data Summary
 
-We complied global country-level economics data from the World Bank Global Development Indices Dataset. We combined this with information from the Word Nuclear Association, Transparency International, and Britannica. In total our dataset has 55 country-level observations measuring yearly averages for the year 2023. We have recorded Percentage of Electricity Derived from Oil Sources, GDP, Population, Percentage of GDP from Industrial Sources, Net trade, Number of Nuclear Reactors, Region, Landlocked Status, and Corruption level.
+We compiled global country-level economics data from the World Bank Global Development Indices Dataset. We combined this with information from the Word Nuclear Association, Transparency International, and Britannica. In total our dataset has 55 country-level observations measuring yearly averages for the year 2023. We have recorded Percentage of Electricity Derived from Oil Sources, GDP, Population, Percentage of GDP from Industrial Sources, Net trade, Number of Nuclear Reactors, Region, Landlocked Status, and Corruption level.
 
 In our dataset, we do not have any NA's. We dropped any country with NA values for concerns regarding data accuracy. We also dropped five extreme outliers well over a standard deviation away from the rest of our values. We are trying to evaluate the impact of various levels on developed and developing economies. All five of the outliers were below that threshold.
+
+From the histogram created for the response variable, the data appears to be continuous and quantitative. This indicates that it is suitable for regression. For the majority of the quantitative predictors (trade, industry_pct, ln_gdp sqrt_reactors), there appears to be a negative correlation between them, while ln_population is the only one with a positive correlation. For the qualitative variables, there appears to be a difference between each of their levels. For region, regions 1 (Asia) and 2 (Europe) the lowest average electricity oil percent while regions 3 (North and South America) and 4 (Africa) have the highest. For the landlocked variable, it seems that countries that are not landlocked have a slightly larger average electricity oil percentage than countries that are. For the corruption score, there seem to be large differences. Countries with a higher level of corruption (1) have a much higher usage of their electricity with oil than countries with a lower corruption score (3).
+
+Finally, there were three interaction plots created. The first interaction is trade and whether or not a country is landlocked. The slopes differ, suggesting there could possible be an interaction between the two. The second interaction is trade and region. Between regions 3 and 4, there does not appear to be much of an interaction, and the same applies to regions 1 and 2; however, if these pairs of regions are grouped together, their slopes differ greatly. The third interaction is ln_gdp and corruption level. For countries with a corruption level of 1, the slope is greatly different from the other two levels. For corruption groups 2 and 3, there is not too much of a difference in slope. There could be an interaction.
 
 ### Metadata Description
 
@@ -57,6 +61,8 @@ In our dataset, we do not have any NA's. We dropped any country with NA values f
 ```{r, echo=FALSE, warning=FALSE,results=FALSE}
 ## Use this code chunk can be used to execute any functions or summaries 
 ## that will not be included in your output such as correlations or 5 number summaries
+cor(oilData[, c("trade","industry_pct","ln_gdp","sqrt_reactors", "ln_population")],
+    oilData$electricity_oil_pct, use="pairwise.complete.obs")
 
 ```
 
