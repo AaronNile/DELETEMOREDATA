@@ -18,6 +18,18 @@ knitr::opts_chunk$set(echo = TRUE, highlight=FALSE, comment=NA, warnings=FALSE,m
 ## Use this chunk for reading in packages.
 ## Use this chunk for reading in the data, combining the data, and any other major data cleaning that is not relevant to show.
 ## Remove the ## before all code.
+library(corrplot)
+library(GGally)
+
+oilData <- read.csv("clean.csv")
+
+# Converting qualitative variables to factors
+oilData$region <- as.factor(oilData$region)
+oilData$LL <- as.factor(oilData$LL)
+oilData$qual_score <- as.factor(oilData$qual_score)
+
+head(oilData)
+str(oilData)
 ```
 
 \newpage
@@ -33,6 +45,7 @@ There are three main research questions that we are trying to answer. Each of wh
 3.  Does a higher percentage of a country's economy in industry lead to a higher percentage of electricity derived from oil?
 
 ## Data Summary
+
 
 ### Metadata Description
 
@@ -67,8 +80,7 @@ There are three main research questions that we are trying to answer. Each of wh
 ## Appendix B: Data Rows
 
 ```{r, echo=FALSE}
-# Use head() function to output first several rows
-
+head(oilData)
 ```
 
 \newpage
@@ -79,6 +91,78 @@ There are three main research questions that we are trying to answer. Each of wh
 ## Use this code  to include the relevant plots from EDA
 ## This should NOT be a dump of all of your plots and outputs.
 ## Refer to the Rmarkdown guide for sizing information on your plots
+
+hist(oilData$electricity_oil_pct,
+     xlab = "Percentage of Electricity from Oil",
+     main = "Histogram of Response Variable",
+     breaks = 5,       # increase number of bins
+     xaxt = "n")        # suppress x-axis
+
+# Add custom x-axis ticks every 5%
+axis(side = 1, at = seq(0, 100, by = 1))  # 0%, 5%, 10%, ..., 100%
+
+quant_vars <- names(oilData)[sapply(oilData, is.numeric)]
+quant_vars <- setdiff(quant_vars, "electricity_oil_pct")
+
+for (var in quant_vars) {
+  
+  df <- oilData[, c(var, "electricity_oil_pct")]
+  df <- df[complete.cases(df), ]
+  
+  plot(df[[var]], df$electricity_oil_pct,
+       xlab = var,
+       ylab = "Electricity from Oil (%)",
+       main = paste("Electricity Oil % vs", var))
+  
+  model <- lm(electricity_oil_pct ~ x, data = transform(df, x = df[[var]]))
+  abline(model, col = "red")
+}
+
+# By region
+ggplot(oilData, aes(x = region, y = electricity_oil_pct)) +
+  geom_boxplot(fill = "lightblue") +
+  theme_minimal() +
+  labs(title = "Electricity Oil % by Region")
+
+# By landlocked
+ggplot(oilData, aes(x = LL, y = electricity_oil_pct)) +
+  geom_boxplot(fill = "lightgreen") +
+  theme_minimal() +
+  labs(title = "Electricity Oil % by Landlocked Status")
+
+# By corruption level
+ggplot(oilData, aes(x = qual_score, y = electricity_oil_pct)) +
+  geom_boxplot(fill = "lightcoral") +
+  theme_minimal() +
+  labs(title = "Electricity Oil % by Corruption Level")
+
+ggplot(oilData, aes(x = trade,
+y = electricity_oil_pct,
+color = factor(LL))) +
+geom_point(alpha = 0.6) +
+geom_smooth(method = "lm", se = FALSE) +
+labs(title = "Trade × Landlocked Interaction",
+x = "Trade",
+y = "Electricity from Oil (%)",
+color = "Landlocked")
+
+ggplot(oilData, aes(x = trade,
+y = electricity_oil_pct,
+color = region)) +
+geom_point(alpha = 0.6) +
+geom_smooth(method = "lm", se = FALSE) +
+labs(title = "Trade × Region Interaction",
+x = "Trade",
+y = "Electricity from Oil (%)")
+
+ggplot(oilData, aes(x = ln_gdp,
+y = electricity_oil_pct,
+color = qual_score)) +
+geom_point(alpha = 0.6) +
+geom_smooth(method = "lm", se = FALSE) +
+labs(title = "GDP × Institutional Quality Interaction",
+x = "Log GDP",
+y = "Electricity from Oil (%)")
 
 # This partition is optional, but can be useful for a simple way to resize your plots
 par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
