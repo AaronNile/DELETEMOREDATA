@@ -20,6 +20,9 @@ knitr::opts_chunk$set(echo = TRUE, highlight=FALSE, comment=NA, warnings=FALSE,m
 ## Remove the ## before all code.
 library(corrplot)
 library(GGally)
+library(car)
+
+install.packages("car")
 
 oilData <- read.csv("clean.csv")
 
@@ -54,6 +57,8 @@ From the histogram created for the response variable, the data appears to be con
 
 Finally, there were three interaction plots created. The first interaction is trade and whether or not a country is landlocked. The slopes differ, suggesting there could possible be an interaction between the two. The second interaction is trade and region. Between regions 3 and 4, there does not appear to be much of an interaction, and the same applies to regions 1 and 2; however, if these pairs of regions are grouped together, their slopes differ greatly. The third interaction is ln_gdp and corruption level. For countries with a corruption level of 1, the slope is greatly different from the other two levels. For corruption groups 2 and 3, there is not too much of a difference in slope. There could be an interaction.
 
+The VIF results indicate that multicollinearity is generally low in the model explaining electricity generated from oil (%). While ln_population and ln_gdp show moderate correlation, their VIF values remain below concerning thresholds, suggesting they do not severely distort the estimated effects. Overall, the predictors appear sufficiently independent to support reliable inference about factors influencing electricity from oil.
+
 ### Metadata Description
 
 ### EDA Summary
@@ -61,6 +66,11 @@ Finally, there were three interaction plots created. The first interaction is tr
 ```{r, echo=FALSE, warning=FALSE,results=FALSE}
 ## Use this code chunk can be used to execute any functions or summaries 
 ## that will not be included in your output such as correlations or 5 number summaries
+
+model <- lm(electricity_oil_pct ~ industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + trade + qual_score, data = oilData)
+
+vif(model)
+
 cor(oilData[, c("trade","industry_pct","ln_gdp","sqrt_reactors", "ln_population")],
     oilData$electricity_oil_pct, use="pairwise.complete.obs")
 
