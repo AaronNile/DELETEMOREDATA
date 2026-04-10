@@ -76,10 +76,11 @@ There are three main research questions that we are trying to answer. Each of wh
 | trade         | trade  | This is the second variable. |
 | Electricity Oil Percentage  | electricity_oil_pct | percentage of electricity from oil |
 | Industry Percentage   |  industry_pct  | percentage of GDP from industry |
-| Nuclear Reactors  | Reactors      | Number of nuclear reactors in particular country |
+| Nuclear Reactors  | Reactors     | Number of nuclear reactors in particular country |
 | Landlocked    |   LL             | Binary variable: 1 if landlocked, 0 if not |
-| Region  | Region | This is the first variable.  |
-|  Variable 2   |       Var2       | This is the second variable. |
+| Region        | Region           |Geographic Regions, 1: Asia, 2: Europe, 3: Americas, 4: Africa, 5: Oceania |
+| Corruption level| qual_score     | Degree of corruption | 1:Very Corrupt 2: Moderately Corrupt, 3: Fair |
+| population     | population       | Population of a country |
 
 \newpage
 
