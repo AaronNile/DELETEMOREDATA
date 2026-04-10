@@ -50,11 +50,21 @@ We complied global country-level economics data from the World Bank Global Devel
 
 In our dataset, we do not have any NA's. We dropped any country with NA values for concerns regarding data accuracy. We also dropped five extreme outliers well over a standard deviation away from the rest of our values. We are trying to evaluate the impact of various levels on developed and developing economies. All five of the outliers were below that threshold.
 
+The VIF results indicate that multicollinearity is generally low in the model explaining electricity generated from oil (%). While ln_population and ln_gdp show moderate correlation, their VIF values remain below concerning thresholds, suggesting they do not severely distort the estimated effects. Overall, the predictors appear sufficiently independent to support reliable inference about factors influencing electricity from oil.
+
 ### Metadata Description
 
 ### EDA Summary
 
 ```{r, echo=FALSE, warning=FALSE,results=FALSE}
+install.packages("car")
+library(car)
+
+
+model <- lm(electricity_oil_pct ~ industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + trade + qual_score, data = oilData)
+
+# Calculate VIF values
+vif(model)
 ## Use this code chunk can be used to execute any functions or summaries 
 ## that will not be included in your output such as correlations or 5 number summaries
 
