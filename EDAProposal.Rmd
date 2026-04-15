@@ -21,6 +21,7 @@ knitr::opts_chunk$set(echo = TRUE, highlight=FALSE, comment=NA, warnings=FALSE,m
 library(corrplot)
 library(GGally)
 library(car)
+library(MASS)
 
 install.packages("car")
 
@@ -45,7 +46,7 @@ There are three main research questions that we are trying to answer. Each of wh
 
 2.  Does a higher population lead to a higher percentage of electricity derived from oil?
 
-3.  Does a higher percentage of a country's economy in industry lead to a higher percentage of electricity derived from oil?
+3.  Does a higher corruption level lead to a higher percentage of electricity derived from oil?
 
 ## Data Summary
 
@@ -63,25 +64,40 @@ The VIF results indicate that multicollinearity is generally low in the model ex
 
 ### EDA Summary
 
-```{r, echo=FALSE, warning=FALSE,results=FALSE}
+```{r, echo=FALSE, warning=FALSE,results=TRUE}
 ## Use this code chunk can be used to execute any functions or summaries 
 ## that will not be included in your output such as correlations or 5 number summaries
 
 model <- lm(electricity_oil_pct ~ industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + trade + qual_score, data = oilData)
 
-vif(model)
+print(vif(model))
 
-cor(oilData[, c("trade","industry_pct","ln_gdp","sqrt_reactors", "ln_population")],
-    oilData$electricity_oil_pct, use="pairwise.complete.obs")
+print(cor(oilData[, c("trade","industry_pct","ln_gdp","sqrt_reactors", "ln_population")],
+    oilData$electricity_oil_pct, use="pairwise.complete.obs"))
 
 ```
 
 ## Analysis and Results
 
-```{r, echo=FALSE, warning=FALSE,results=FALSE}
-## This code chunk can be used to execute any functions or summaries that will not be included in your output
+We conducted a multiple linear regression (MLR) analysis to examine the relationship between country-level characteristics and the percentage of electricity generated from oil sources. The initial full model included the following predictors: trade, industry percentage, log population, log GDP, square root of nuclear reactors, landlocked status, region, and corruption level.
 
-```
+We began with a full model including all explanatory variables identified during the exploratory data analysis. These variables were selected based on their relevance to our research questions and initial evidence of association with the response variable. To assess multicollinearity, we calculated Variance Inflation Factors (VIFs) for all predictors. Most VIF values were below commonly accepted thresholds, indicating that multicollinearity was not a major concern. Although log population and log GDP showed moderate correlation, their inclusion did not significantly distort coefficient estimates, so both variables were retained in the model.
+
+We then evaluated the assumptions of multiple linear regression using diagnostic plots. The residual plots suggested mild violations of normality and potential heteroscedasticity, as the spread of residuals was not constant and the normal Q-Q plot showed deviations from linearity. To address these violations, we applied a Box-Cox transformation to the response variable. The optimal transformation parameter ($\lambda$) was selected by maximizing the log-likelihood function. After transforming the response variable, we refit the model using the same set of predictors. The transformed model showed improved adherence to regression assumptions. Residuals appeared more normally distributed, and the variance was more constant across fitted values. This indicated that the Box-Cox transformation was appropriate and improved the validity of our model.
+
+For the other two assumptions, we assume independence of observations across countries. While economic and geographic linkages (e.g., trade agreements or regional energy dependencies) may introduce some dependence, each country is treated as a distinct observational unit. Also, we assessed the model using residual diagnostics and exploratory scatterplots. After the Box-Cox transformation, no clear systematic curvature or pattern remained, suggesting that the linear functional form is appropriate for the data.
+
+Once the model was fit, a Global F Test was conducted, and it is as follows:
+
+$H_0: \beta_1 + \beta_2 + \beta_3 + \beta_4 + \beta_5 + \beta_6 + \beta_7 + \beta_8 = 0$
+
+$H_1:$ At least one beta does not equal zero
+
+Distribution of Test Statistic: F with 12 numerator DF and 42 denominator DF
+
+Test Statistic: F = 2.105, p = 0.0377
+
+Conclusion: We reject the null hypothesis with a significance level of 0.05. Therefore, the model with trade, industry_pct, ln_population. ln_gdp, sqrt_reactors, LL, region, qual_score is significant in predicting a country's percentage of electricity derived from oil.
 
 ## Conclusions
 
@@ -129,6 +145,9 @@ axis(side = 1, at = seq(0, 100, by = 1))  # 0%, 5%, 10%, ..., 100%
 
 quant_vars <- names(oilData)[sapply(oilData, is.numeric)]
 quant_vars <- setdiff(quant_vars, "electricity_oil_pct")
+quant_vars <- quant_vars[-3]
+quant_vars <- quant_vars[-7]
+quant_vars <- quant_vars[-6]
 
 for (var in quant_vars) {
   
@@ -198,15 +217,64 @@ par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
 
 ## Appendix D: Final Model Output and Plots
 
-```{r, echo=FALSE, warning=FALSE,results=FALSE}
-## This code chunk can be used to execute any functions or summaries that will not be included in your output
-```
-
 ```{r, echo=FALSE}
 ## Use this section to output the summary of your final model
 ## Include the relevant plots from assumptions and your additional techniques
 ## This should NOT be a dump of all of your plots and outputs.
 ## Refer to the Rmarkdown guide for sizing information on your plots
+
+BCTransform <- function(y, lambda=0)
+{
+    if (lambda == 0L) 
+    { 
+      log(y) 
+    }
+    else 
+    { 
+      (y^lambda - 1) / lambda 
+    }
+}
+
+BCTransformInverse <- function(yt, lambda=0)
+{
+    if (lambda == 0L)
+    { 
+      exp(yt) 
+    }
+    else
+    { 
+      exp(log(1 + lambda * yt)/lambda)
+    }
+}
+
+## Assumptions and Final Model
+finalModel <- lm(electricity_oil_pct ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + qual_score, data = oilData)
+
+summary(finalModel)
+
+plot(finalModel)
+
+## Box-Cox Transformation
+shift <- abs(min(oilData$electricity_oil_pct, na.rm = TRUE)) + 0.001
+oilData$electricity_oil_pct_shifted <- oilData$electricity_oil_pct + shift
+
+model_shifted <- lm(electricity_oil_pct_shifted ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + qual_score, data = oilData)
+
+bc <- boxcox(model_shifted, lambda = seq(-2, 2, by = 0.1))
+bc.power <- bc$x[which.max(bc$y)]
+
+oilData$electricity_oil_pct.bc <- BCTransform(oilData$electricity_oil_pct_shifted, bc.power)
+
+hist(oilData$electricity_oil_pct.bc, breaks=15); rug(oilData$electricity_oil_pct.bc)
+
+lmFinalModelRefit <- lm(electricity_oil_pct.bc ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + qual_score, data = oilData)
+
+summary(lmFinalModelRefit)
+
+plot(lmFinalModelRefit)
+
+# This partition is optional, but can be useful for a simple way to resize your plots
+par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
 ```
 
 \newpage
