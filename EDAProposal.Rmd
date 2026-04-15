@@ -218,20 +218,21 @@ par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
 We complied global country-level economics data from the World Bank Global Development Indices Dataset. We combined this with information from the Word Nuclear Association, Transparency International, and Britannica. Our total dataset records Percentage of Electricity Derived from Oil Sources, GDP, Population, Percentage of GDP from Industrial Sources, Net trade, Number of Nuclear Reactors, Region, Landlocked Status, and Corruption level data.
 
 ### Data Sources
-The Editors of Encyclopaedia Britannica. (n.d.). Landlocked country. Encyclopaedia Britannica. https://www.britannica.com/topic/landlocked-country
 
-Transparency International. (2023). Corruption perceptions index 2023. https://www.transparency.org/en/cpi/2023
+The Editors of Encyclopaedia Britannica. (n.d.). Landlocked country. Encyclopaedia Britannica. <https://www.britannica.com/topic/landlocked-country>
 
-United Nations Statistics Division. (n.d.). Statistical methodology and classifications. https://unstats.un.org/
+Transparency International. (2023). Corruption perceptions index 2023. <https://www.transparency.org/en/cpi/2023>
 
-World Bank. (2024a). Electricity production from oil sources (% of total) [Data set]. World Development Indicators. https://data.worldbank.org/indicator/EG.ELC.PETR.ZS
+United Nations Statistics Division. (n.d.). Statistical methodology and classifications. <https://unstats.un.org/>
 
-World Bank. (2024b). GDP (current US$) [Data set]. World Development Indicators. https://data.worldbank.org/indicator/NY.GDP.MKTP.CD
+World Bank. (2024a). Electricity production from oil sources (% of total) [Data set]. World Development Indicators. <https://data.worldbank.org/indicator/EG.ELC.PETR.ZS>
 
-World Bank. (2024c). Population, total [Data set]. World Development Indicators. https://data.worldbank.org/indicator/SP.POP.TOTL
+World Bank. (2024b). GDP (current US\$) [Data set]. World Development Indicators. <https://data.worldbank.org/indicator/NY.GDP.MKTP.CD>
 
-World Bank. (2024d). Trade (% of GDP) [Data set]. World Development Indicators. https://data.worldbank.org/indicator/BN.GSR.GNFS.CD
+World Bank. (2024c). Population, total [Data set]. World Development Indicators. <https://data.worldbank.org/indicator/SP.POP.TOTL>
 
-World Nuclear Association. (n.d.). World nuclear power reactors and uranium requirements. https://world-nuclear.org/information-library/facts-and-figures/world-nuclear-power-reactors-and-uranium-requireme
+World Bank. (2024d). Trade (% of GDP) [Data set]. World Development Indicators. <https://data.worldbank.org/indicator/BN.GSR.GNFS.CD>
+
+World Nuclear Association. (n.d.). World nuclear power reactors and uranium requirements. <https://world-nuclear.org/information-library/facts-and-figures/world-nuclear-power-reactors-and-uranium-requireme>
 
 ### Additional Help
