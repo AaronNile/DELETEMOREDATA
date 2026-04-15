@@ -87,7 +87,9 @@ We then evaluated the assumptions of multiple linear regression using diagnostic
 
 For the other two assumptions, we assume independence of observations across countries. While economic and geographic linkages (e.g., trade agreements or regional energy dependencies) may introduce some dependence, each country is treated as a distinct observational unit. Also, we assessed the model using residual diagnostics and exploratory scatterplots. After the Box-Cox transformation, no clear systematic curvature or pattern remained, suggesting that the linear functional form is appropriate for the data.
 
-Once the model was fit, a Global F Test was conducted, and it is as follows:
+Once the model was fit, a recalculation of the VIFs was done to compare to the original model. VIF values remained essentially the same compared to the non-transformed model, so multicollinearity remained as a non-concern.
+
+After the VIFs were recalculated, a Global F Test was conducted, and it is as follows:
 
 $H_0: \beta_1 + \beta_2 + \beta_3 + \beta_4 + \beta_5 + \beta_6 + \beta_7 + \beta_8 = 0$
 
@@ -273,6 +275,7 @@ summary(lmFinalModelRefit)
 
 plot(lmFinalModelRefit)
 
+print(vif(lmFinalModelRefit))
 # This partition is optional, but can be useful for a simple way to resize your plots
 par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
 ```
