@@ -50,8 +50,6 @@ There are three main research questions that we are trying to answer. Each of wh
 
 ## Data Summary
 
-We compiled global country-level economics data from the World Bank Global Development Indices Dataset. We combined this with information from the Word Nuclear Association, Transparency International, and Britannica. In total our dataset has 55 country-level observations measuring yearly averages for the year 2023. We have recorded Percentage of Electricity Derived from Oil Sources, GDP, Population, Percentage of GDP from Industrial Sources, Net trade, Number of Nuclear Reactors, Region, Landlocked Status, and Corruption level.
-
 In our dataset, we do not have any NA's. We dropped any country with NA values for concerns regarding data accuracy. We also dropped five extreme outliers well over a standard deviation away from the rest of our values. We are trying to evaluate the impact of various levels on developed and developing economies. All five of the outliers were below that threshold.
 
 From the histogram created for the response variable, the data appears to be continuous and quantitative. This indicates that it is suitable for regression. For the majority of the quantitative predictors (trade, industry_pct, ln_gdp sqrt_reactors), there appears to be a negative correlation between them, while ln_population is the only one with a positive correlation. For the qualitative variables, there appears to be a difference between each of their levels. For region, regions 1 (Asia) and 2 (Europe) the lowest average electricity oil percent while regions 3 (North and South America) and 4 (Africa) have the highest. For the landlocked variable, it seems that countries that are not landlocked have a slightly larger average electricity oil percentage than countries that are. For the corruption score, there seem to be large differences. Countries with a higher level of corruption (1) have a much higher usage of their electricity with oil than countries with a lower corruption score (3).
@@ -61,6 +59,8 @@ Finally, there were three interaction plots created. The first interaction is tr
 The VIF results indicate that multicollinearity is generally low in the model explaining electricity generated from oil (%). While ln_population and ln_gdp show moderate correlation, their VIF values remain below concerning thresholds, suggesting they do not severely distort the estimated effects. Overall, the predictors appear sufficiently independent to support reliable inference about factors influencing electricity from oil.
 
 ### Metadata Description
+
+We compiled global country-level economics data from the World Bank Global Development Indices Dataset. We combined this with information from the Word Nuclear Association, Transparency International, and Britannica. In total our dataset has 55 country-level observations measuring yearly averages for the year 2023. We have recorded Percentage of Electricity Derived from Oil Sources, GDP, Population, Percentage of GDP from Industrial Sources, Net trade, Number of Nuclear Reactors, Region, Landlocked Status, and Corruption level.
 
 ### EDA Summary
 
@@ -78,28 +78,79 @@ print(cor(oilData[, c("trade","industry_pct","ln_gdp","sqrt_reactors", "ln_popul
 ```
 
 ## Analysis and Results
-
 We conducted a multiple linear regression (MLR) analysis to examine the relationship between country-level characteristics and the percentage of electricity generated from oil sources. The initial full model included the following predictors: trade, industry percentage, log population, log GDP, square root of nuclear reactors, landlocked status, region, and corruption level.
 
 We began with a full model including all explanatory variables identified during the exploratory data analysis. These variables were selected based on their relevance to our research questions and initial evidence of association with the response variable. To assess multicollinearity, we calculated Variance Inflation Factors (VIFs) for all predictors. Most VIF values were below commonly accepted thresholds, indicating that multicollinearity was not a major concern. Although log population and log GDP showed moderate correlation, their inclusion did not significantly distort coefficient estimates, so both variables were retained in the model.
 
-We then evaluated the assumptions of multiple linear regression using diagnostic plots. The residual plots suggested mild violations of normality and potential heteroscedasticity, as the spread of residuals was not constant and the normal Q-Q plot showed deviations from linearity. To address these violations, we applied a Box-Cox transformation to the response variable. The optimal transformation parameter ($\lambda$) was selected by maximizing the log-likelihood function. After transforming the response variable, we refit the model using the same set of predictors. The transformed model showed improved adherence to regression assumptions. Residuals appeared more normally distributed, and the variance was more constant across fitted values. This indicated that the Box-Cox transformation was appropriate and improved the validity of our model.
+A nested F test for a potential interaction between log GDP and corruption level was conducted:
 
-For the other two assumptions, we assume independence of observations across countries. While economic and geographic linkages (e.g., trade agreements or regional energy dependencies) may introduce some dependence, each country is treated as a distinct observational unit. Also, we assessed the model using residual diagnostics and exploratory scatterplots. After the Box-Cox transformation, no clear systematic curvature or pattern remained, suggesting that the linear functional form is appropriate for the data.
+$H_0:$ All interaction coefficients are zero
+$H_1:$ At least one interaction coefficient is not zero
 
-Once the model was fit, a recalculation of the VIFs was done to compare to the original model. VIF values remained essentially the same compared to the non-transformed model, so multicollinearity remained as a non-concern.
+Distribution of Test Statistic: F with 2 numerator DF and 40 denominator DF
 
-After the VIFs were recalculated, a Global F Test was conducted, and it is as follows:
+Test Statistic: F = 1.7214, p = 0.1918
 
-$H_0: \beta_1 + \beta_2 + \beta_3 + \beta_4 + \beta_5 + \beta_6 + \beta_7 + \beta_8 = 0$
+Conclusion: We fail to reject the null hypothesis at the 0.05 significance level. There is insufficient evidence to conclude that the interaction between ln GDP and corruption level significantly improves the model. Therefore, the interaction term is not included in the final model.
 
+A Global F Test was conducted, and it is as follows:
+
+$H_0:$ All betas equal zero
 $H_1:$ At least one beta does not equal zero
 
 Distribution of Test Statistic: F with 12 numerator DF and 42 denominator DF
 
 Test Statistic: F = 2.105, p = 0.0377
 
-Conclusion: We reject the null hypothesis with a significance level of 0.05. Therefore, the model with trade, industry_pct, ln_population. ln_gdp, sqrt_reactors, LL, region, qual_score is significant in predicting a country's percentage of electricity derived from oil.
+Conclusion: We reject the null hypothesis with a significance level of 0.05. Therefore, the model with trade, industry_pct, ln_population, ln_gdp, sqrt_reactors, LL, region, and qual_score is significant in predicting a country's percentage of electricity derived from oil.
+
+We then conducted a t-test on each of our three variables of interest.
+
+ln_population:
+
+$H_0:$ The beta for ln_population equals zero
+$H_1:$ The beta for ln_population does not equal zero
+
+Distribution of Test Statistic: t with 42 DF
+
+Test Statistic: t = 1.566, p = 0.1248
+
+Conclusion: We fail to reject the null hypothesis at the 0.05 significance level. There is insufficient evidence to conclude that ln population is a statistically significant predictor of electricity generated from oil in the presence of the other variables in the model. 
+
+ln_GDP:
+
+$H_0:$ The beta for ln_gdp equals zero
+$H_1:$ The beta for ln_gdp does not equal zero
+
+Distribution of Test Statistic: t with 42 DF
+
+Test Statistic: t = -0.295, p = 0.7697
+
+Conclusion: We fail to reject the null hypothesis at the 0.05 significance level. There is insufficient evidence to conclude that ln GDP is a statistically significant predictor of electricity generated from oil in the presence of the other variables in the model.
+
+qual_score:
+
+Because qual_score is a factor, we conduct the test as a joint interpretation of the individual t-tests shown in the model output.
+
+$H_0:$ All coefficients for qual_score levels equal zero
+$H_1:$ At least one qual_score coefficient is not equal to zero
+
+Distribution of Test Statistic: t (individual coefficient tests, DF = 42)
+
+Test Statistics:
+
+qual_score2: t = -0.113, p = 0.9106
+qual_score3: t = -0.361, p = 0.7201
+
+Conclusion: We fail to reject the null hypothesis at the 0.05 significance level. There is insufficient evidence to conclude that corruption level (qual_score) is a statistically significant predictor of electricity generated from oil in the presence of the other variables in the model.
+
+Even though none of the individual t-tests for ln_population, ln_gdp, or qual_score are statistically significant at the 0.05 level, we will retain these variables in the model due to their theoretical relevance and role in explaining cross-country differences in energy structure. These predictors may still contribute to the overall explanatory power of the model in combination with other variables, and removing them could lead to omitted variable bias or an incomplete representation of the underlying relationships.
+
+We then evaluated the assumptions of multiple linear regression using diagnostic plots. The residual plots suggested mild violations of normality and potential heteroscedasticity, as the spread of residuals was not constant and the normal Q-Q plot showed deviations from linearity. Additionally, one high-leverage observation was identified, but was retained due to no evidence of data error.
+
+To address these violations, we applied a Box-Cox transformation to the response variable. The optimal transformation parameter ($\lambda$) was selected by maximizing the log-likelihood function. After transforming the response variable, we refit the model using the same set of predictors. The transformed model showed improved adherence to regression assumptions. Residuals appeared more normally distributed, and the variance was more constant across fitted values. This indicated that the Box-Cox transformation was appropriate and improved the validity of our model.
+
+Once the model was fit, a recalculation of the VIFs was done to compare to the original model. VIF values remained essentially the same compared to the non-transformed model, so multicollinearity remained a non-concern.
 
 ## Conclusions
 
@@ -150,6 +201,9 @@ quant_vars <- setdiff(quant_vars, "electricity_oil_pct")
 quant_vars <- quant_vars[-3]
 quant_vars <- quant_vars[-7]
 quant_vars <- quant_vars[-6]
+quant_vars <- quant_vars[-5]
+quant_vars <- quant_vars[-2]
+quant_vars <- quant_vars[-1]
 
 for (var in quant_vars) {
   
@@ -165,42 +219,11 @@ for (var in quant_vars) {
   abline(model, col = "red")
 }
 
-# By region
-ggplot(oilData, aes(x = region, y = electricity_oil_pct)) +
-  geom_boxplot(fill = "lightblue") +
-  theme_minimal() +
-  labs(title = "Electricity Oil % by Region")
-
-# By landlocked
-ggplot(oilData, aes(x = LL, y = electricity_oil_pct)) +
-  geom_boxplot(fill = "lightgreen") +
-  theme_minimal() +
-  labs(title = "Electricity Oil % by Landlocked Status")
-
 # By corruption level
 ggplot(oilData, aes(x = qual_score, y = electricity_oil_pct)) +
   geom_boxplot(fill = "lightcoral") +
   theme_minimal() +
   labs(title = "Electricity Oil % by Corruption Level")
-
-ggplot(oilData, aes(x = trade,
-y = electricity_oil_pct,
-color = factor(LL))) +
-geom_point(alpha = 0.6) +
-geom_smooth(method = "lm", se = FALSE) +
-labs(title = "Trade × Landlocked Interaction",
-x = "Trade",
-y = "Electricity from Oil (%)",
-color = "Landlocked")
-
-ggplot(oilData, aes(x = trade,
-y = electricity_oil_pct,
-color = region)) +
-geom_point(alpha = 0.6) +
-geom_smooth(method = "lm", se = FALSE) +
-labs(title = "Trade × Region Interaction",
-x = "Trade",
-y = "Electricity from Oil (%)")
 
 ggplot(oilData, aes(x = ln_gdp,
 y = electricity_oil_pct,
@@ -210,6 +233,7 @@ geom_smooth(method = "lm", se = FALSE) +
 labs(title = "GDP × Institutional Quality Interaction",
 x = "Log GDP",
 y = "Electricity from Oil (%)")
+
 
 # This partition is optional, but can be useful for a simple way to resize your plots
 par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
@@ -225,6 +249,19 @@ par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
 ## This should NOT be a dump of all of your plots and outputs.
 ## Refer to the Rmarkdown guide for sizing information on your plots
 
+## Interaction Testing
+reducedModel <- lm(electricity_oil_pct ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + qual_score, data = oilData)
+
+completeModel <- lm(electricity_oil_pct ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + qual_score + qual_score * ln_gdp, data = oilData)
+
+anova(reducedModel, completeModel)
+
+## Assumptions and Final Model
+finalModel <- lm(electricity_oil_pct ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + qual_score, data = oilData)
+
+plot(finalModel)
+
+## Box-Cox Transformation
 BCTransform <- function(y, lambda=0)
 {
     if (lambda == 0L) 
@@ -249,14 +286,6 @@ BCTransformInverse <- function(yt, lambda=0)
     }
 }
 
-## Assumptions and Final Model
-finalModel <- lm(electricity_oil_pct ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + qual_score, data = oilData)
-
-summary(finalModel)
-
-plot(finalModel)
-
-## Box-Cox Transformation
 shift <- abs(min(oilData$electricity_oil_pct, na.rm = TRUE)) + 0.001
 oilData$electricity_oil_pct_shifted <- oilData$electricity_oil_pct + shift
 
@@ -276,6 +305,7 @@ summary(lmFinalModelRefit)
 plot(lmFinalModelRefit)
 
 print(vif(lmFinalModelRefit))
+
 # This partition is optional, but can be useful for a simple way to resize your plots
 par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
 ```
@@ -307,3 +337,5 @@ World Bank. (2024d). Trade (% of GDP) [Data set]. World Development Indicators. 
 World Nuclear Association. (n.d.). World nuclear power reactors and uranium requirements. <https://world-nuclear.org/information-library/facts-and-figures/world-nuclear-power-reactors-and-uranium-requireme>
 
 ### Additional Help
+Rossiter, D. (n.d.). Box-Cox Transformation. Box-cox transformation.
+<https://www.css.cornell.edu/faculty/dgr2/_static/files/R_html/Transformations.html>
