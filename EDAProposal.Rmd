@@ -42,11 +42,11 @@ str(oilData)
 
 There are three main research questions that we are trying to answer. Each of which is very similar, with the difference being between the predictors. The research questions are as follows:
 
-1.  Does a higher GDP lead to a higher percentage of electricity derived from oil?
+1.  Do countries with a higher GDP have a higher percentage of electricity derived from oil?
 
-2.  Does a higher population lead to a higher percentage of electricity derived from oil?
+2.  Do countries with a higher population have a higher percentage of electricity derived from oil?
 
-3.  Does a higher corruption level lead to a higher percentage of electricity derived from oil?
+3.  Do countries with a higher corruption level have a higher percentage of electricity derived from oil?
 
 ## Data Summary
 
