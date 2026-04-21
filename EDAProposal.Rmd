@@ -79,6 +79,7 @@ print(cor(oilData[, c("trade","industry_pct","ln_gdp","sqrt_reactors", "ln_popul
 ```
 
 ## Analysis and Results
+
 We conducted a multiple linear regression (MLR) analysis to examine the relationship between country-level characteristics and the percentage of electricity generated from oil sources. The initial full model included the following predictors: trade, industry percentage, log population, log GDP, square root of nuclear reactors, landlocked status, region, and corruption level.
 
 We began with a full model including all explanatory variables identified during the exploratory data analysis. These variables were selected based on their relevance to our research questions and initial evidence of association with the response variable. To assess multicollinearity, we calculated Variance Inflation Factors (VIFs) for all predictors. Most VIF values were below commonly accepted thresholds, indicating that multicollinearity was not a major concern. Although log population and log GDP showed moderate correlation, their inclusion did not significantly distort coefficient estimates, so both variables were retained in the model.
@@ -105,11 +106,28 @@ Once the model was fit, a recalculation of the VIFs was done to compare to the o
 
 Our model predicted the following equation:
 
-Electricity percentage derived from oil = -0.3693 - 0.1343 industry_pct + 0.5693 ln_population - 0.07246 ln_gdp - 0.3462 sqrt_reactors - 0.1675 LL1 + 0.6346 region2 + 2.014 region3 + 1.971 region4 + 1.244 region5 - 6.718 \* 10\^-13 trade - 2.142 qual_score2 - 3.059 qual_score3
+$$
+\begin{aligned}
+\text{Electricity percentage derived from oil} =
+- 0.3693
+- 0.1343\,\text{industry_pct}
++ 0.5693\,\text{ln_population} \\
+- 0.07246\,\text{ln_gdp} 
+- 0.3462\,\text{sqrt_reactors}
+- 0.1675\,\text{LL} \\
++ 0.6346\,\text{region2}
++ 2.014\,\text{region3}
++ 1.971\,\text{region4}
++ 1.244\,\text{region5} \\
+- 6.718 \times 10^{-13}\,\text{trade}
+- 2.142\,\text{qual_score2}
+- 3.059\,\text{qual_score3}
+\end{aligned}
+$$
 
 Our model predicts that a 1% increase in the population of a country will increase the percentage of electricity derived from oil by 0.57%. Similarly, it predicts that a country in Europe has 0.63% more of their electricity production generated from oil relative to a country in Asia. GDP was inversely correlated with percentage of electricity derived from oil with a 1% increase in GDP predicted to decrease the percentage of electricity derived from oil by 0.07%.
 
-Our model is not very useful for prediction. While our model rejected the null in the global F-test, proving it has some predictive power, our individual t-tests for ln_population, ln_gdp, and qual_score, were not statistically significant at the 0.05 level. 
+Our model is not very useful for prediction. While our model rejected the null in the global F-test, proving it has some predictive power, our individual t-tests for ln_population, ln_gdp, and qual_score, were not statistically significant at the 0.05 level.
 
 Predicting the percentage of electricity derived from oil for the country of Algeria:
 
@@ -118,12 +136,12 @@ algeria <- filter(oilData, country_name == "Algeria")
 
 algeria_predicted <- predict(model, newdata = algeria)
 
-algeria_predicted
+algeria_predicted/10
 
 algeria$electricity_oil_pct
 ```
 
-Our model predicts that the percentage of electricity derived from oil for the country of Algeria is 2.56%. The actual value of percentage of electricity derived from oil for Algeria is 2.79%.
+Our model predicts that the percentage of electricity derived from oil for the country of Algeria is 25.6%. The actual value of percentage of electricity derived from oil for Algeria is 27.9%.
 
 Predicting the percentage of electricity derived from oil for the country of Croatia:
 
@@ -132,12 +150,12 @@ croatia <- filter(oilData, country_name == "Croatia")
 
 croatia_predicted <- predict(model, newdata = croatia)
 
-croatia_predicted
+croatia_predicted/10
 
 croatia$electricity_oil_pct
 ```
 
-Our model predicts that the percentage of electricity derived from oil for the country of Croatia is 2.09%. The actual value of percentage of electricity derived from oil for Algeria is 2.11%.
+Our model predicts that the percentage of electricity derived from oil for the country of Croatia is 20.9%. The actual value of percentage of electricity derived from oil for Algeria is 21.1%.
 
 The three main research questions we wanted to answer (see below) were not fully addressed by our model. Our individual t-tests for ln_population, ln_gdp, and qual_score were not statistically significant at the 0.05 level. This would seem to suggest that none of these factors are significant when predicting percentage of electricity derived from oil. To further address these questions, we want to instead approach the questions of GDP and population using qualitative data. GDP, which is highly correlated with population, may have been obscured, so using development level instead could help focus our results. To further explore our initial questions, we want to add more variables to find what the main predictors of percentage of electricity derived from oil truly are.
 
@@ -330,5 +348,5 @@ World Bank. (2024d). Trade (% of GDP) [Data set]. World Development Indicators. 
 World Nuclear Association. (n.d.). World nuclear power reactors and uranium requirements. <https://world-nuclear.org/information-library/facts-and-figures/world-nuclear-power-reactors-and-uranium-requireme>
 
 ### Additional Help
-Rossiter, D. (n.d.). Box-Cox Transformation. Box-cox transformation.
-<https://www.css.cornell.edu/faculty/dgr2/_static/files/R_html/Transformations.html>
+
+Rossiter, D. (n.d.). Box-Cox Transformation. Box-cox transformation. <https://www.css.cornell.edu/faculty/dgr2/_static/files/R_html/Transformations.html>
