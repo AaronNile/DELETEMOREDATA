@@ -15,9 +15,7 @@ knitr::opts_chunk$set(echo = TRUE, highlight=FALSE, comment=NA, warnings=FALSE,m
 ```
 
 ```{r, echo=FALSE, warning=FALSE,results=FALSE}
-## Use this chunk for reading in packages.
-## Use this chunk for reading in the data, combining the data, and any other major data cleaning that is not relevant to show.
-## Remove the ## before all code.
+# Installing Libraries, Packages, and Data
 library(corrplot)
 library(GGally)
 library(car)
@@ -28,7 +26,7 @@ install.packages("car")
 
 oilData <- read.csv("clean.csv")
 
-# Converting qualitative variables to factors
+# Converting Qualitative Variables to Factors
 oilData$region <- as.factor(oilData$region)
 oilData$LL <- as.factor(oilData$LL)
 oilData$qual_score <- as.factor(oilData$qual_score)
@@ -66,13 +64,14 @@ We compiled global country-level economics data from the World Bank Global Devel
 ### EDA Summary
 
 ```{r, echo=FALSE, warning=FALSE,results=TRUE}
-## Use this code chunk can be used to execute any functions or summaries 
-## that will not be included in your output such as correlations or 5 number summaries
-
+# Building The Original Model
 model <- lm(electricity_oil_pct ~ industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + trade + qual_score, data = oilData)
 
+# Run VIF To Check for Multicollinearity (Only Compare Quantitative)
 print(vif(model))
 
+
+# Calculate Correlations of Quantitative Variables
 print(cor(oilData[, c("trade","industry_pct","ln_gdp","sqrt_reactors", "ln_population")],
     oilData$electricity_oil_pct, use="pairwise.complete.obs"))
 
@@ -86,15 +85,15 @@ We began with a full model including all explanatory variables identified during
 
 A nested F-test was conducted to evaluate a potential interaction between log GDP and corruption level. The null hypothesis states that all interaction coefficients are equal to zero, while the alternative hypothesis states that at least one interaction coefficient is not zero. The test statistic follows an F distribution with 2 numerator degrees of freedom and 40 denominator degrees of freedom. The computed value of the test statistic was F = 1.7214 with a p-value of 0.1918. At the 0.05 significance level, we fail to reject the null hypothesis, indicating that there is insufficient evidence to conclude that the interaction between ln_GDP and corruption level significantly improves the model. As a result, the interaction term is not included in the final model.
 
-A global F-test was then conducted to assess the overall significance of the model. The null hypothesis states that all regression coefficients are equal to zero, while the alternative hypothesis states that at least one coefficient is not equal to zero. This test follows an F distribution with 12 numerator degrees of freedom and 42 denominator degrees of freedom. The observed test statistic was F = 2.105 with a p-value of 0.0377. Since the p-value is less than 0.05, we reject the null hypothesis and conclude that the model—including trade, industry percentage, ln population, ln GDP, square root of reactors, LL, region, and qual_score is statistically significant in predicting a country’s percentage of electricity derived from oil.
+A global F-test was then conducted to assess the overall significance of the model. The null hypothesis states that all regression coefficients are equal to zero, while the alternative hypothesis states that at least one coefficient is not equal to zero. This test follows an F distribution with 12 numerator degrees of freedom and 42 denominator degrees of freedom. The observed test statistic was F = 2.105 with a p-value of 0.0377. Since the p-value is less than 0.05, we reject the null hypothesis and conclude that the model, including trade, industry percentage, ln population, ln GDP, square root of reactors, LL, region, and qual_score is statistically significant in predicting a country’s percentage of electricity derived from oil.
 
 Next, individual t-tests were conducted for the variables of interest. For ln_population, the null hypothesis states that its coefficient is equal to zero, while the alternative states that it is not equal to zero. The test statistic follows a t distribution with 42 degrees of freedom, yielding t = 1.566 with a p-value of 0.1248. Because the p-value exceeds 0.05, we fail to reject the null hypothesis and conclude that ln_population is not a statistically significant predictor of electricity generated from oil when controlling for the other variables in the model.
 
-For ln_gdp, the null hypothesis similarly states that its coefficient is equal to zero, with the alternative stating it is not equal to zero. Using a t distribution with 42 degrees of freedom, the test statistic was t = −0.295 with a p-value of 0.7697. Again, we fail to reject the null hypothesis at the 0.05 significance level, indicating that ln_GDP is not a statistically significant predictor in the presence of the other variables.
+For ln_gdp, the null hypothesis similarly states that its coefficient is equal to zero, with the alternative stating it is not equal to zero. Using a t distribution with 42 degrees of freedom, the test statistic was t = -0.295 with a p-value of 0.7697. Again, we fail to reject the null hypothesis at the 0.05 significance level, indicating that ln_GDP is not a statistically significant predictor in the presence of the other variables.
 
-Finally, because qual_score is a categorical variable, its significance was assessed through a joint interpretation of its individual coefficient t-tests. The null hypothesis states that all coefficients corresponding to the levels of qual_score are equal to zero, while the alternative states that at least one is not equal to zero. Each coefficient was tested using a t distribution with 42 degrees of freedom. The results were t = −0.113 with p = 0.9106 for qual_score2 and t = −0.361 with p = 0.7201 for qual_score3. Since both p-values exceed 0.05, we fail to reject the null hypothesis and conclude that corruption level, as measured by qual_score, is not a statistically significant predictor of electricity generated from oil when considered alongside the other variables in the model.
+Finally, because qual_score is a categorical variable with more than one level, its significance was assessed through a nested F-test. The null hypothesis states that all coefficients corresponding to the levels of qual_score are equal to zero, while the alternative states that at least one is not equal to zero. The test was conducted through a full and reduced model with ANOVA, and used a F distribution with 2 numerator degrees of freedom and 42 denominator degrees of freedom. The results were F = 0.1146 with p = 0.892. Since the p-value exceeds 0.05, we fail to reject the null hypothesis and conclude that corruption level, as measured by qual_score, is not a statistically significant predictor of electricity generated from oil when considered alongside the other variables in the model.
 
-Even though none of the individual t-tests for ln_population, ln_gdp, or qual_score are statistically significant at the 0.05 level, we will retain these variables in the model due to their theoretical relevance and role in explaining cross-country differences in energy structure. These predictors may still contribute to the overall explanatory power of the model in combination with other variables, and removing them could lead to omitted variable bias or an incomplete representation of the underlying relationships.
+Even though none of the individual t-tests for ln_population and ln_gdp, and the nested F-test for qual_score are statistically significant at the 0.05 level, we will retain these variables in the model due to their theoretical relevance and role in explaining cross-country differences in energy structure. These predictors may still contribute to the overall explanatory power of the model in combination with other variables, and removing them could lead to omitted variable bias or an incomplete representation of the underlying relationships.
 
 We then evaluated the assumptions of multiple linear regression using diagnostic plots. The residual plots suggested mild violations of normality and potential heteroscedasticity. The residual vs. fitted plots had clustering of data points, and the spread of residuals was not constant. Furthermore, the normal Q-Q plot showed deviations from linearity, especially in the upper tail, suggesting a violation of normality. Additionally, one high-leverage observation was identified, but was retained due to no evidence of data error.
 
@@ -106,28 +105,11 @@ Once the model was fit, a recalculation of the VIFs was done to compare to the o
 
 Our model predicted the following equation:
 
-$$
-\begin{aligned}
-\text{Electricity percentage derived from oil} =
-- 0.3693
-- 0.1343\,\text{industry_pct}
-+ 0.5693\,\text{ln_population} \\
-- 0.07246\,\text{ln_gdp} 
-- 0.3462\,\text{sqrt_reactors}
-- 0.1675\,\text{LL} \\
-+ 0.6346\,\text{region2}
-+ 2.014\,\text{region3}
-+ 1.971\,\text{region4}
-+ 1.244\,\text{region5} \\
-- 6.718 \times 10^{-13}\,\text{trade}
-- 2.142\,\text{qual_score2}
-- 3.059\,\text{qual_score3}
-\end{aligned}
-$$
+$\widehat{\log({Electricity percentage derived from oil})} = -0.3693 - 0.1343industrypct + 0.5693lnpopulation - 0.07246lngdp - 0.3462sqrtreactors - 0.1675LL + 0.6346region2 + 2.014region3 + 1.971region4 + 1.244region5 - 6.718 \times 10^{-13}trade - 2.142qualscore2 - 3.059qualscore3$
 
 Our model predicts that a 1% increase in the population of a country will increase the percentage of electricity derived from oil by 0.57%. Similarly, it predicts that a country in Europe has 0.63% more of their electricity production generated from oil relative to a country in Asia. GDP was inversely correlated with percentage of electricity derived from oil with a 1% increase in GDP predicted to decrease the percentage of electricity derived from oil by 0.07%.
 
-Our model is not very useful for prediction. While our model rejected the null in the global F-test, proving it has some predictive power, our individual t-tests for ln_population, ln_gdp, and qual_score, were not statistically significant at the 0.05 level.
+Our model is not very useful for prediction. While our model rejected the null in the global F-test, proving it has some predictive power, our individual t-tests for ln_population and ln_gdp, and our nested F-test for qual_score, were not statistically significant at the 0.05 level.
 
 Predicting the percentage of electricity derived from oil for the country of Algeria:
 
@@ -157,7 +139,7 @@ croatia$electricity_oil_pct
 
 Our model predicts that the percentage of electricity derived from oil for the country of Croatia is 20.9%. The actual value of percentage of electricity derived from oil for Algeria is 21.1%.
 
-The three main research questions we wanted to answer (see below) were not fully addressed by our model. Our individual t-tests for ln_population, ln_gdp, and qual_score were not statistically significant at the 0.05 level. This would seem to suggest that none of these factors are significant when predicting percentage of electricity derived from oil. To further address these questions, we want to instead approach the questions of GDP and population using qualitative data. GDP, which is highly correlated with population, may have been obscured, so using development level instead could help focus our results. To further explore our initial questions, we want to add more variables to find what the main predictors of percentage of electricity derived from oil truly are.
+The three main research questions we wanted to answer (see below) were not fully addressed by our model. Our individual t-tests for ln_population and ln_gdp, and our nested F-test for qual_score were not statistically significant at the 0.05 level. This would seem to suggest that none of these factors are significant when predicting percentage of electricity derived from oil. To further address these questions, we want to instead approach the questions of GDP and population using qualitative data. GDP, which is highly correlated with population, may have been obscured, so using development level instead could help focus our results. To further explore our initial questions, we want to add more variables to find what the main predictors of percentage of electricity derived from oil truly are.
 
 1.  Do countries with a higher GDP have a higher percentage of electricity derived from oil?
 
@@ -194,18 +176,14 @@ head(oilData)
 ### Appendix C: Exploratory Data Analysis
 
 ```{r, echo=FALSE}
-## Use this code  to include the relevant plots from EDA
-## This should NOT be a dump of all of your plots and outputs.
-## Refer to the Rmarkdown guide for sizing information on your plots
-
+# Histogram of Response Variable
 hist(oilData$electricity_oil_pct,
      xlab = "Percentage of Electricity from Oil",
      main = "Histogram of Response Variable",
-     breaks = 5,       # increase number of bins
-     xaxt = "n")        # suppress x-axis
+     breaks = 5,
+     xaxt = "n")
 
-# Add custom x-axis ticks every 5%
-axis(side = 1, at = seq(0, 100, by = 1))  # 0%, 5%, 10%, ..., 100%
+axis(side = 1, at = seq(0, 100, by = 1))
 
 quant_vars <- names(oilData)[sapply(oilData, is.numeric)]
 quant_vars <- setdiff(quant_vars, "electricity_oil_pct")
@@ -216,6 +194,7 @@ quant_vars <- quant_vars[-5]
 quant_vars <- quant_vars[-2]
 quant_vars <- quant_vars[-1]
 
+# By ln_GDP and ln_population
 for (var in quant_vars) {
   
   df <- oilData[, c(var, "electricity_oil_pct")]
@@ -230,12 +209,13 @@ for (var in quant_vars) {
   abline(model, col = "red")
 }
 
-# By corruption level
+# By Corruption Level
 ggplot(oilData, aes(x = qual_score, y = electricity_oil_pct)) +
   geom_boxplot(fill = "lightcoral") +
   theme_minimal() +
   labs(title = "Electricity Oil % by Corruption Level")
 
+# Potential Interaction Between GDP and qual_score
 ggplot(oilData, aes(x = ln_gdp,
 y = electricity_oil_pct,
 color = qual_score)) +
@@ -245,8 +225,6 @@ labs(title = "GDP × Institutional Quality Interaction",
 x = "Log GDP",
 y = "Electricity from Oil (%)")
 
-
-# This partition is optional, but can be useful for a simple way to resize your plots
 par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
 ```
 
@@ -255,24 +233,19 @@ par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
 ## Appendix D: Final Model Output and Plots
 
 ```{r, echo=FALSE}
-## Use this section to output the summary of your final model
-## Include the relevant plots from assumptions and your additional techniques
-## This should NOT be a dump of all of your plots and outputs.
-## Refer to the Rmarkdown guide for sizing information on your plots
-
-## Interaction Testing
+# Interaction Testing
 reducedModel <- lm(electricity_oil_pct ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + qual_score, data = oilData)
 
 completeModel <- lm(electricity_oil_pct ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + qual_score + qual_score * ln_gdp, data = oilData)
 
 anova(reducedModel, completeModel)
 
-## Assumptions and Final Model
+# Assumptions and Final Model
 finalModel <- lm(electricity_oil_pct ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + qual_score, data = oilData)
 
-plot(finalModel)
+plot(finalModel, which = c(1, 2))
 
-## Box-Cox Transformation
+# Box-Cox Transformation
 BCTransform <- function(y, lambda=0)
 {
     if (lambda == 0L) 
@@ -302,22 +275,30 @@ oilData$electricity_oil_pct_shifted <- oilData$electricity_oil_pct + shift
 
 model_shifted <- lm(electricity_oil_pct_shifted ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + qual_score, data = oilData)
 
-bc <- boxcox(model_shifted, lambda = seq(-2, 2, by = 0.1))
+bc <- boxcox(model_shifted, lambda = seq(-2, 2, by = 0.1), plotit = FALSE)
 bc.power <- bc$x[which.max(bc$y)]
 
 oilData$electricity_oil_pct.bc <- BCTransform(oilData$electricity_oil_pct_shifted, bc.power)
 
+# Histogram of Transformed Model
 hist(oilData$electricity_oil_pct.bc, breaks=15, xlab = "Box Cox of Electricity Percent", main = "Histogram of Box Cox Electricity Percent From Oil"); rug(oilData$electricity_oil_pct.bc)
 
 lmFinalModelRefit <- lm(electricity_oil_pct.bc ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + qual_score, data = oilData)
 
 summary(lmFinalModelRefit)
 
-plot(lmFinalModelRefit)
+# Plots of Final Model
+plot(lmFinalModelRefit, which = c(1, 2))
 
 print(vif(lmFinalModelRefit))
 
-# This partition is optional, but can be useful for a simple way to resize your plots
+# Test qual_score
+reducedModel <- lm(electricity_oil_pct.bc ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region, data = oilData)
+
+fullModel <- lm(electricity_oil_pct.bc ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + qual_score, data = oilData)
+
+anova(reducedModel, fullModel)
+
 par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
 ```
 
