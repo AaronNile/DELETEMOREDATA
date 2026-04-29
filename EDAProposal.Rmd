@@ -173,9 +173,9 @@ head(oilData)
 
 \newpage
 
-### Appendix C: Exploratory Data Analysis
+## Appendix C: Exploratory Data Analysis
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, fig.width=3.75, fig.height=3}
 # Histogram of Response Variable
 hist(oilData$electricity_oil_pct,
      xlab = "Percentage of Electricity from Oil",
@@ -224,8 +224,6 @@ geom_smooth(method = "lm", se = FALSE) +
 labs(title = "GDP × Institutional Quality Interaction",
 x = "Log GDP",
 y = "Electricity from Oil (%)")
-
-par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
 ```
 
 \newpage
@@ -233,6 +231,8 @@ par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
 ## Appendix D: Final Model Output and Plots
 
 ```{r, echo=FALSE}
+par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
+
 # Interaction Testing
 reducedModel <- lm(electricity_oil_pct ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + qual_score, data = oilData)
 
@@ -298,8 +298,6 @@ reducedModel <- lm(electricity_oil_pct.bc ~ trade + industry_pct + ln_population
 fullModel <- lm(electricity_oil_pct.bc ~ trade + industry_pct + ln_population + ln_gdp + sqrt_reactors + LL + region + qual_score, data = oilData)
 
 anova(reducedModel, fullModel)
-
-par(mfrow=c(2,3),pin=c(1,1),mar=c(7.1,4.1,3,1))
 ```
 
 \newpage
